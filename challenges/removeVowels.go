@@ -14,5 +14,5 @@ func removeVowels(s string) string {
 func main() {
 	testString := "This is a phrase"
 	result := removeVowels(testString)
-	fmt.Printf("%v\n%v", testString, result)
+	fmt.Printf("%v\n%v\n", testString, result)
 }
