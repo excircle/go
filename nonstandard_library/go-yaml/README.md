@@ -179,7 +179,7 @@ The answer is that it is far easier to work with a struct than it is to manually
 
 The Go struct will give you greater ease of use, better labeling of the data, and help other programmers understand your code.
 
-### Full Program To Read 'config.yaml' into Memory
+# Full Program To Read 'config.yaml' into Memory
 
 ```Go
 // Read file into Memory
@@ -198,10 +198,10 @@ import (
 // Config
 type Config struct {
 	Domain struct {
-		Hostname    string		`yaml:"hostname"`
-		SOA         []string	`yaml:"soa,flow"`
-		IP          string		`yaml:"ip"`
-		Nameservers []string    `yaml:"nameservers,flow"`
+		Hostname    string `yaml:"hostname"`
+		SOA         []string  `yaml:"soa,flow"`
+		IP          string    `yaml:"ip"`
+		Nameservers []string  `yaml:"nameservers,flow"`
 	}
 }
 
@@ -228,4 +228,100 @@ func main() {
 ```
 
 For information on how to write YAML to a file, see the next chapter.
+</details>
+
+<details><summary>Writing YAML To A File</summary>
+
+# How To Write YAML To A File
+
+You may find yourself in a situation where you need to write YAML configuration to a file.
+
+Let's a look a how we can do this.
+
+### Utilizing a Go Struct for YAML
+
+As mentioned in previous chapters, we use Go structs, based on the YAML we wish to work with, to control YAML input and output.
+
+We will reuse the config and structs from the previous chapter
+
+```go
+// YAML structure we wish to write
+type Config struct {
+	Domain struct {
+		Hostname    string   `yaml:"hostname"`
+		SOA         []string `yaml:"soa,flow"`
+		IP          string   `yaml:"ip"`
+		Nameservers []string `yaml:"nameservers,flow"`
+	}
+}
+
+// Populate the Go struct with data
+	yamlConfig.Domain.Hostname = "example.com"
+	yamlConfig.Domain.SOA = []string{"ns11.example.com", "ns12.example.com"}
+	yamlConfig.Domain.IP = "10.0.0.80"
+	yamlConfig.Domain.Nameservers = []string{"ns11.example.com", "ns12.example.com"}
+```
+
+### Getting a Slice/Array of Bytes to Write Our YAML
+
+As explained previously, we use an array of bytes to work with YAML in the raw.
+
+Last time we worked with an array of bytes, we moved data from the YAML side of things, into the Go side of things using `yaml.Unmarshal`.
+
+`config.yaml => Memory =[Unmarshal]=> GoStruct`
+
+Now we shall do the opposite. We will move data from the Go side of things, to the YAML side of things.
+
+This will be accomplished using a similar yaml function called `yaml.Marshal`.
+
+In essence, we will be reversing the flow of data as listed below:
+
+`goStruct =[Marshal]=> Memory => GoStruct`
+
+Another way to look at this operation is:
+
+```java
+Unmarshal:  "Unloads from memory/array"
+Marshal:    "Loads into memory/array"
+```
+
+Below, you will see us use the `yaml.Marshall` command to load bytes into memory from Go.
+
+```go
+	//Create []bytes from yaml struct 'yamlConfig'
+	sliceOfBytes, err := yaml.Marshal(&yamlConfig)
+	if err != nil {
+		log.Fatalf("We could not Marshal new struct: %s\n", err)
+	}
+```
+
+### Creating a File and Writing Our YAML to it.
+
+Now that we have the YAML data `marshal`ed into memory, we can use Go native libraries to create a file and write the YAML structure into that file which was created.
+
+```go
+	////create new YAML config 'b.yaml'
+	f, err := os.Create("./b.yaml")
+	if err != nil {
+		log.Fatalf("We could not Create new file 'b.yaml': %s\n", err)
+	}
+
+	//If anything fails, defer will execute a close before program terminates no matter what
+	defer f.Close()
+
+	////write to b.yaml
+	f.Write(sliceOfBytes)
+```
+
+# Full Program To Write YAML to 'b.yaml'
+
+You may notice that when we write our data to this b.yaml file, it doesn't exactly resemble what we used before.
+
+The reason for this is due to how tricky the YAML spec is.
+
+YAML is very human friendly, but that ease comes at a cost. It is not trivial to write program libraries which can preserve structure and follow stylistic norms.
+
+Because you can write valid YAML several different ways, `go-yaml` defaults to a YAML structure which closely resembles the `map[string]string` data structure that is utilized in Go.
+
+The thing to bear in mind is that the YAML data found in `b.yaml` is valid and compatible with the other format we saw in the previous lesson file `config.yaml`.
 </details>
