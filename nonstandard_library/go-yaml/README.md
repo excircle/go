@@ -97,7 +97,7 @@ See the next chapters for examples of how these structs can be used in conjuctio
 
 
 
-<details><summary>Reading a YAML Config File In Go</summary>
+<details><summary>Reading a YAML Config File With Go</summary>
 
 # Reading a YAML File into Memory
 
@@ -240,7 +240,7 @@ func main() {
 For information on how to write YAML to a file, see the next chapter.
 </details>
 
-<details><summary>Writing YAML To A File</summary>
+<details><summary>Writing YAML To A File With Go</summary>
 
 # How To Write YAML To A File
 
