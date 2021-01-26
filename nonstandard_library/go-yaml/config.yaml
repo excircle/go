@@ -1,0 +1,9 @@
+domain:
+  hostname: unixdisciple.com
+  soa: 
+    - ns12.domaincontrol.com.
+    - dns.jomax.net.
+  ip: 157.230.49.66
+  nameservers:	
+    - ns11.domaincontrol.com.
+    - ns12.domaincontrol.com.
