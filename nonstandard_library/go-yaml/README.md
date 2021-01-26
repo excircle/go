@@ -49,13 +49,13 @@ fmt.Println(Alex["firstname"])
 
 Golang is a statically typed, and compiled language. 
 
-When working with Go and YAML, the type of data that comes from YAML must be known to Go so the compiler can compile the right data to the right types.
+When working with Go and YAML, the data-type of values derived from YAML must be known to Go so the compiler can be told how to use and handle data.
 
-Since the compiler won't allow data that doesn't have a statically-defined type to be compiled, we must explain to Go (via structs) exactly what we will be dealing with when we obtain our data from YAML.
+Since Go won't attempt to compile data that doesn't have a statically-defined type, we must explain to Go (via structs) exactly what we will be dealing with when we derive data from YAML.
 
 ### Structs Must Reflect The Data You Retrieve From YAML
 
-If you are looking for a string and an integer from a YAML file, you must define a `string` and `int` type in Go and scan the respective YAML values to these types accordingly.
+Suppose you are looking for a string and an integer from a YAML file. To accomplish this with Go, you must define a `string` and `int` type and scan the respective YAML values to these types respectively.
 
 Let's take a look at how YAML values can be reflected in Go.
 
@@ -69,7 +69,13 @@ programmer:
 
 If we wanted to reflect this YAML structure in Go, we can create a user-defined struct. To handle the recursive nature of YAML, we will embed a struct for every sub-level of data that needs to be expressed.
 
-Notice how we define 2 structs in the example below. One for the `programmer` level, and another struct for the levels beneath. The types for the YAML data fields are first defined using Go data-types (`string`), then further defined to explain how the struct fields will be regarded with respect to the YAML specification. This format of `language_type:"key_defining_string"` works for JSON as well: `json:"firstname"`
+Notice how we define 2 structs in the example below.
+
+One for the `programmer` level, and another struct for the levels beneath.
+
+The types for the YAML data fields are first defined using Go data-types (`string`, `int`), then further defined to explain how the struct fields will be referenced with respect to the YAML specification and the literal values in the YAML doc.
+
+This format of `language_type:"key_defining_string"` works for JSON as well: `json:"firstname"`
 
 ```Go
 type Programmer struct {
@@ -131,7 +137,7 @@ type Domain struct {
 
 Next, we can begin the process of reading the YAML config file into memory.
 
-When we read a file into memory using Go, it is typically read an array of bytes.
+When we read a file into memory using Go, it is typically read an array of bytes (`[]uint8` to be specific).
 
 Once it is in memory as bytes, it can be written to another file, or it can be converted into characters, or utilized according to the purpose of your program.
 
@@ -141,7 +147,7 @@ Here is a basic example of reading a YAML file into memory as an array of bytes.
 	//Variable for the name of the file we wish to read
 	configFile := "./config.yaml"
 
-	//Read configFile into a slice/array of bytes ([]byte)
+	//Read configFile into a slice/array of bytes ( []byte/[]uint8 )
 	sliceOfBytes, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		log.Fatalf("Error reading YAML file: %s\n", err)
@@ -173,11 +179,15 @@ The below Go code shows an example of taking the byte data from memory, and load
 
 ### Why Load YAML into Memory & into a Struct?
 
-You may be asking your self why we have an array of usable data, and a struct with the exact same data duplicated into it.
+You may be asking yourself, why do we have a copy of the YAML file as an array of bytes and as Go struct?
 
-The answer is that it is far easier to work with a struct than it is to manually handle bytes in memory.
+Go is a "typed" lanague, meaning everything needs to have a defined type.
 
-The Go struct will give you greater ease of use, better labeling of the data, and help other programmers understand your code.
+The structs we use to represent the YAML file serve to not only define what types we're working with, but to simplify the process of working with the data.
+
+We could work directly with the bytes array in memory, but this would require code to be written for basically every operation required, including type conversion if we need to manipulate or evaluate this data.
+
+Long story short, structs act as an interface to the YAML data and give us the ability to execute Go functionality against the data, without having to write custom Go code to deal with the byte slice directly.
 
 # Full Program To Read 'config.yaml' into Memory
 
@@ -240,7 +250,7 @@ Let's a look a how we can do this.
 
 ### Utilizing a Go Struct for YAML
 
-As mentioned in previous chapters, we use Go structs, based on the YAML we wish to work with, to control YAML input and output.
+As mentioned in previous chapters, we use Go structs, defined to match the YAML we wish to work with, to control YAML input and output.
 
 We will reuse the config and structs from the previous chapter
 
