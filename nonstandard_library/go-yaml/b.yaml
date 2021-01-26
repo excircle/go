@@ -1,0 +1,5 @@
+domain:
+    hostname: example.com
+    soa: [ns11.example.com, ns12.example.com]
+    ip: 10.0.0.80
+    nameservers: [ns11.example.com, ns12.example.com]
