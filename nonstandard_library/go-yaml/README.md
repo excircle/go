@@ -334,4 +334,56 @@ YAML is very human friendly, but that ease comes at a cost. It is not trivial to
 Because you can write valid YAML several different ways, `go-yaml` defaults to a YAML structure which closely resembles the `map[string]string` data structure that is utilized in Go.
 
 The thing to bear in mind is that the YAML data found in `b.yaml` is valid and compatible with the other format we saw in the previous lesson file `config.yaml`.
+
+```Go
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"gopkg.in/yaml.v3"
+)
+
+// Config
+type Config struct {
+	Domain struct {
+		Hostname    string   `yaml:"hostname"`
+		SOA         []string `yaml:"soa,flow"`
+		IP          string   `yaml:"ip"`
+		Nameservers []string `yaml:"nameservers,flow"`
+	}
+}
+
+func main() {
+	var yamlConfig Config
+
+	//Populate yamlConfigData - Feel free to change the data
+	yamlConfig.Domain.Hostname = "example.com"
+	yamlConfig.Domain.SOA = []string{"ns11.example.com", "ns12.example.com"}
+	yamlConfig.Domain.IP = "10.0.0.80"
+	yamlConfig.Domain.Nameservers = []string{"ns11.example.com", "ns12.example.com"}
+
+	//Create []bytes from yaml struct 'yamlConfig'
+	sliceOfBytes, err := yaml.Marshal(&yamlConfig)
+	if err != nil {
+		log.Fatalf("We could not Marshal new struct: %s\n", err)
+	}
+
+	////create new YAML config 'b.yaml'
+	f, err := os.Create("./b.yaml")
+	if err != nil {
+		log.Fatalf("We could not Create new file 'b.yaml': %s\n", err)
+	}
+
+	//If anything fails, execute a close command no matter what
+	defer f.Close()
+
+	////write to b.yaml
+	f.Write(sliceOfBytes)
+
+	fmt.Println("Please examine the contents of 'b.yaml' file for correctness")
+}
+```
 </details>
