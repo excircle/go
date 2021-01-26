@@ -1,8 +1,8 @@
 # Go-Yaml
 
-This is a repository dedicated to displaying some demo code using the `gopkg.in/yaml` Golang package.
+This is a repository dedicated to displaying demo code using the `gopkg.in/yaml` Golang package.
 
-Let's start by showing some demonstration code.
+# Table of Contents
 
 <details><summary>What Is YAML?</summary>
 
